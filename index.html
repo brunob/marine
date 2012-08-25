@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MarineTraffic and OpenSeaMap</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.3/leaflet.css" />
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.3/leaflet.ie.css" />
+	<![endif]-->
+	<style type="text/css"> 
+		html, body,#map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+	<!--<script src="http://cdn.leafletjs.com/leaflet-0.4.3/leaflet.js"></script>-->
+	<script src="http://cdn.leafletjs.com/leaflet-0.4.3/leaflet-src.js"></script>
+	<script src="https://raw.github.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+	
+</head>
+<body>
+<div id="map"></div>
+<script src="geojson.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+(function($){
+	$(function(){
+
+		var map = new L.Map('map').setView([48.5, -5], 9);
+
+		var acetateUrl = 'http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png',
+			acetateAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 GeoIQ',
+			acetate = new L.TileLayer(acetateUrl, {maxZoom: 19, attribution: acetateAttribution}).addTo(map);
+		
+		openseamap = new L.TileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
+		
+		var geojsonLayer = new L.geoJson(rail_ouessant,{
+			style: function (feature) {
+				return feature.properties.style;
+			}
+		}).addTo(map);
+		
+		var layersControl = new L.Control.Layers({
+			'Acetate': acetate
+		}, {
+			'OpenSeaMap': openseamap,
+			'Rail Ouessant': geojsonLayer
+		}).addTo(map);
+		
+		var boatIcon = new L.Icon({
+			iconUrl: 'marker.png',
+			shadowUrl: null,
+			iconSize: new L.Point(19, 26),
+			iconAnchor: new L.Point(9, 13)
+		});
+		
+		var markerGroup = new L.LayerGroup();
+		
+		var loadAis = function() {
+			$.getJSON("proxy.php",
+				{
+					url: "http://www.marinetraffic.com/ais/exportraw.aspx?id=9UI89O0STPW6GNS5YWLJ&protocol=json&timespan=4",
+					mode: "native"
+				},
+				function(data) {
+					if (data) {
+						markerGroup.clearLayers(); // comment this line to see the traject of boat just for fun
+						$.each(data, function(i,item){
+							var lat = item[1];
+							var lng = item[2];
+							var marker = new L.Marker(new L.LatLng(lat,lng), {icon:boatIcon});
+							marker.options.course = item[4];
+							marker.setIconAngle(marker.options.course);
+							marker.options.mmsi = item[0];
+							marker.options.status = item[5];
+							marker.on('click', function(e) {
+								var popup = new L.Popup();
+								popup.setLatLng(e.target._latlng);
+								//http://www.marinetraffic.com/ais/shipinfo.aspx?mmsi=226318000&header=true&shipname=CAP%20FINISTERE&lat=-5.152&lon=48.30617
+								$.get("proxy.php",
+									{
+										url: "http://www.marinetraffic.com/ais/shipinfo.aspx?mmsi="+ e.target.options.mmsi +"&lat="+ e.target._latlng.lat +"&lon="+ e.target._latlng.lng,
+										mode: "native"
+									},
+									function(data) {
+										popup.setContent(data);
+										map.openPopup(popup);
+									});
+							});
+							markerGroup.addLayer(marker);
+						});
+						map.addLayer(markerGroup);
+					}
+				})
+			.error(function() { alert("error loading data"); });
+		};
+		
+		loadAis();
+		setInterval(loadAis, 125000); //125 seconds
+
+	});
+})(jQuery);
+//]]>
+</script>
+</body>
+</html>
