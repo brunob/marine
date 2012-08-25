@@ -138,7 +138,7 @@
 // Change these configuration options if needed, see above descriptions for info.
 $enable_jsonp    = false;
 $enable_native   = true;
-$valid_url_regex = '/.*/';
+$valid_url_regex = '/http:\/\/www.marinetraffic.com\//';
 
 // ############################################################################
 
