@@ -40,12 +40,22 @@
 		openseamap = new L.TileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
 		
 		var openweathermapAttribution = 'OpenWeatherMap',
-			clouds = new L.TileLayer('http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/{z}/{x}/{y}.png', {
+			clouds = new L.TileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
 				maxZoom: 19,
 				opacity: 0.3,
 				attribution: openweathermapAttribution
 			}),
-			precip = new L.TileLayer('http://openweathermap.org/t/tile.cgi/1.0.0/PRECIP/{z}/{x}/{y}.png', {
+			precip = new L.TileLayer('http://{s}.tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png', {
+				maxZoom: 19,
+				opacity: 0.3,
+				attribution: openweathermapAttribution
+			});
+			pressure = new L.TileLayer('http://{s}.tile.openweathermap.org/map/pressure/{z}/{x}/{y}.png', {
+				maxZoom: 19,
+				opacity: 0.3,
+				attribution: openweathermapAttribution
+			});
+			wind = new L.TileLayer('http://{s}.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png', {
 				maxZoom: 19,
 				opacity: 0.3,
 				attribution: openweathermapAttribution
@@ -63,7 +73,9 @@
 			'OpenSeaMap': openseamap,
 			'Rail Ouessant': geojsonLayer,
 			'Clouds': clouds,
-			'Precipitation': precip
+			'Precipitation': precip,
+			'Pressure': pressure,
+			'Wind': wind
 		}).addTo(map);
 		
 		var boatIcon = new L.Icon({
