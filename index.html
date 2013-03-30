@@ -36,6 +36,10 @@
 		var acetateUrl = 'http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png',
 			acetateAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 GeoIQ',
 			acetate = new L.TileLayer(acetateUrl, {maxZoom: 19, attribution: acetateAttribution}).addTo(map);
+			
+		var obmUrl = 'http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
+			obmAttribution = 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+			obm = new L.TileLayer(obmUrl, {maxZoom: 13, attribution: obmAttribution}).addTo(map);
 		
 		openseamap = new L.TileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
 		
@@ -68,7 +72,8 @@
 		}).addTo(map);
 		
 		var layersControl = new L.Control.Layers({
-			'Acetate': acetate
+			'Acetate': acetate,
+			'Ocean Base Map': obm
 		}, {
 			'OpenSeaMap': openseamap,
 			'Rail Ouessant': geojsonLayer,
