@@ -70,3 +70,17 @@ var rail_ouessant = {"type": "FeatureCollection",
 		"geometry": {"type": "LineString", "coordinates": [[-5.7575, 48.6041703], [-5.6158335, 48.780009], [-5.4475, 48.8445953]]}}
 	]
 };
+var webcams = {"type": "FeatureCollection",
+	"features": [
+		{"type": "Feature",
+			"properties": {
+				"name": "Saint Mathieu",
+				"popupContent": "http://data.diabox.com/?id=16&view=webcam",
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-4.77092,48.32989]
+			}
+		},
+	]
+};
