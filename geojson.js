@@ -82,5 +82,25 @@ var webcams = {"type": "FeatureCollection",
 				"coordinates": [-4.77092,48.32989]
 			}
 		},
+		{"type": "Feature",
+			"properties": {
+				"name": "Kermorvan",
+				"popupContent": "http://data.diabox.com/?id=15&view=webcam",
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-4.78804,48.36255]
+			}
+		},
+		{"type": "Feature",
+			"properties": {
+				"name": "Le minou",
+				"popupContent": "http://data.diabox.com/?id=11&view=webcam",
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-4.61426,48.33655]
+			}
+		}
 	]
 };
