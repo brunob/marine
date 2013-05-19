@@ -17,6 +17,9 @@
             margin: 0;
             padding: 0;
         }
+        .leaflet-popup-content { overflow: hidden; }
+        .leaflet-popup-content #infopic { float: right; }
+        .leaflet-popup-content #infotext { float: left; }
     </style>
 	<script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
 	<script src="https://raw.github.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
@@ -136,15 +139,16 @@
 							marker.options.mmsi = item[0];
 							marker.options.status = item[5];
 							marker.on('click', function(e) {
-								var popup = new L.Popup();
+								var popup = new L.Popup({'minWidth': 350});
 								popup.setLatLng(e.target._latlng);
-								//http://www.marinetraffic.com/ais/shipinfo.aspx?mmsi=226318000&header=true&shipname=CAP%20FINISTERE&lat=-5.152&lon=48.30617
 								$.get("proxy.php",
 									{
 										url: "http://www.marinetraffic.com/ais/shipinfo.aspx?mmsi="+ e.target.options.mmsi +"&lat="+ e.target._latlng.lat +"&lon="+ e.target._latlng.lng,
 										mode: "native"
 									},
 									function(data) {
+										// fix wrong url for the image
+										data = data.replace('http://www.marinetraffic.com/ais/http://photos','http://photos');
 										popup.setContent(data);
 										map.openPopup(popup);
 									});
