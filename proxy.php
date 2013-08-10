@@ -147,7 +147,7 @@ $valid_url_regex = '/http:\/\/www.marinetraffic.com\//';
  */
 $enable_caching = true;
 //how long after a cache will be renewed
-define(CACHE_TTL,125);
+define(CACHE_TTL,130);//10 mins
 define(CACHE_DIR,'cache');
 
 // ############################################################################
