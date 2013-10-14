@@ -22,8 +22,8 @@
         .leaflet-popup-content #infotext { float: left; }
     </style>
 	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-	<script src="https://rawgithub.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
-	<script src="https://rawgithub.com/mlevans/leaflet-hash/master/leaflet-hash.js"></script>
+	<script src="http://rawgithub.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
+	<script src="http://rawgithub.com/mlevans/leaflet-hash/master/leaflet-hash.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://www.jacklmoore.com/colorbox/jquery.colorbox.js"></script>
 	
@@ -124,7 +124,7 @@
 		var loadAis = function() {
 			$.getJSON("proxy.php",
 				{
-					url: "http://www.marinetraffic.com/ais/exportraw.aspx?id=9UI89O0STPW6GNS5YWLJ&protocol=json&timespan=4",
+					url: "http://services.marinetraffic.com/api/exportvessels/cc503f48eb2c8e49549cc56de3c7059c4b042931/timespan:4/protocol:json",
 					mode: "native"
 				},
 				function(data) {
