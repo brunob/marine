@@ -5,10 +5,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-	<!--[if lte IE 8]>
-		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
-	<![endif]-->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 	<link rel="stylesheet" href="http://www.jacklmoore.com/colorbox/example1/colorbox.css" />
 	<style type="text/css"> 
 		html, body,#map {
@@ -21,7 +18,7 @@
         .leaflet-popup-content #infopic { float: right; }
         .leaflet-popup-content #infotext { float: left; }
     </style>
-	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 	<script src="http://rawgithub.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
 	<script src="http://rawgithub.com/mlevans/leaflet-hash/master/leaflet-hash.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -139,18 +136,25 @@
 							marker.options.mmsi = item[0];
 							marker.options.status = item[5];
 							marker.on('click', function(e) {
-								var popup = new L.Popup({'minWidth': 350});
+								var popup = new L.Popup();
 								popup.setLatLng(e.target._latlng);
 								$.get("proxy.php",
 									{
-										url: "http://www.marinetraffic.com/ais/shipinfo.aspx?mmsi="+ e.target.options.mmsi +"&lat="+ e.target._latlng.lat +"&lon="+ e.target._latlng.lng,
+										url: "http://services.marinetraffic.com/api/exportvessel/00945bab8516d2db6d52a752c9c89232f6e0e7d0/timespan:2/msgtype:extended/protocol:json/mmsi:"+ e.target.options.mmsi,
 										mode: "native"
 									},
 									function(data) {
-										// fix wrong url for the image
-										data = data.replace('http://www.marinetraffic.com/ais/http://photos','http://photos');
-										popup.setContent(data);
-										map.openPopup(popup);
+										if (data.length > 0) {
+											var content = '';
+											content += '<strong>' + data[0][6] + ' - ' + data[0][10] + '</strong>';
+											content += '<br /><strong>Type</strong> : ' + data[0][7];
+											content += '<br /><strong>Longueur / Largeur</strong> : ' + data[0][16] + ' / ' + data[0][17];
+											content += '<br /><strong>Tirant d\'eau</strong> : ' + data[0][18];
+											content += '<br /><strong>Vitesse / Cap</strong> : ' + data[0][3]/10 + ' / ' + data[0][4];
+											content += '<br /><strong>Destination</strong> : ' + data[0][14];
+											popup.setContent(content);
+											map.openPopup(popup);
+										}
 									});
 							});
 							markerGroup.addLayer(marker);
