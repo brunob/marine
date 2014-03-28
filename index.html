@@ -146,8 +146,7 @@
 									function(data) {
 										if (data.length > 0) {
 											var content = '';
-											content += '<strong>' + data[0][6] + ' - ' + data[0][10] + '</strong>';
-											content += '<br /><strong>Type</strong> : ' + data[0][7];
+											content += '<strong><a href="http://www.marinetraffic.com/fr/ais/details/ships/' + data[0][0] + '/">' + data[0][6] + ' - ' + data[0][10] + '</a></strong>';
 											content += '<br /><strong>Longueur / Largeur</strong> : ' + data[0][16] + ' / ' + data[0][17];
 											content += '<br /><strong>Tirant d\'eau</strong> : ' + data[0][18];
 											content += '<br /><strong>Vitesse / Cap</strong> : ' + data[0][3]/10 + ' / ' + data[0][4];
