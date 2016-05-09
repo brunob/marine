@@ -5,7 +5,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
 	<link rel="stylesheet" href="http://www.jacklmoore.com/colorbox/example1/colorbox.css" />
 	<style type="text/css"> 
 		html, body,#map {
@@ -18,10 +18,10 @@
         .leaflet-popup-content #infopic { float: right; }
         .leaflet-popup-content #infotext { float: left; }
     </style>
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
 	<script src="http://rawgithub.com/shramov/leaflet-plugins/master/layer/Marker.Rotate.js"></script>
 	<script src="http://rawgithub.com/mlevans/leaflet-hash/master/leaflet-hash.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 	<script src="http://www.jacklmoore.com/colorbox/jquery.colorbox.js"></script>
 	
 </head>
@@ -39,13 +39,16 @@
 		
 		var hash = new L.Hash(map);
 
-		var obmUrl = 'http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
-			obmAttribution = 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-			obm = new L.TileLayer(obmUrl, {maxZoom: 13, attribution: obmAttribution}).addTo(map);
+		var obm = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
+			attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+			maxZoom: 13
+		}).addTo(map);
 
-		var acetateUrl = 'http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png',
-			acetateAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 GeoIQ',
-			acetate = new L.TileLayer(acetateUrl, {maxZoom: 19, attribution: acetateAttribution});
+		var positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+			subdomains: 'abcd',
+			maxZoom: 19
+		});
 		
 		openseamap = new L.TileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
 		
@@ -99,7 +102,7 @@
 		}).addTo(map);
 		
 		var layersControl = new L.Control.Layers({
-			'Acetate': acetate,
+			'Positron': positron,
 			'Ocean Base Map': obm
 		}, {
 			'OpenSeaMap': openseamap,
