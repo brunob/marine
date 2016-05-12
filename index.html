@@ -35,7 +35,7 @@
 
 		var map = new L.Map('map').setView([48.5, -5], 9);
 		
-		map.attributionControl.setPrefix('').addAttribution('Map data &copy; <a href="http://www.marinetraffic.com">MarineTraffic</a>');
+		map.attributionControl.setPrefix('').addAttribution('Map data &copy; <a href="http://www.myshiptracking.com">My Ship Tracking</a>');
 		
 		var hash = new L.Hash(map);
 
@@ -126,42 +126,49 @@
 		var loadAis = function() {
 			$.getJSON("proxy.php",
 				{
-					url: "http://services.marinetraffic.com/api/exportvessels/cc503f48eb2c8e49549cc56de3c7059c4b042931/timespan:4/protocol:json",
+					url: "http://www.myshiptracking.com/requests/vesselsonmap.php?type=json&minlat=47.73934847257785&maxlat=48.8502827704173&minlon=-7.2201430572509935&maxlon=-1.4193618072509935&zoom=8",
 					mode: "native"
 				},
 				function(data) {
-					if (data) {
+					if (data[0].DATA) {
 						markerGroup.clearLayers(); // comment this line to see the traject of boat just for fun
-						$.each(data, function(i,item){
-							var lat = item[1];
-							var lng = item[2];
-							var marker = new L.Marker(new L.LatLng(lat,lng), {icon:boatIcon});
-							marker.options.course = item[4];
-							marker.setIconAngle(marker.options.course);
-							marker.options.mmsi = item[0];
-							marker.options.status = item[5];
-							marker.on('click', function(e) {
-								var popup = new L.Popup();
-								popup.setLatLng(e.target._latlng);
-								$.get("proxy.php",
-									{
-										url: "http://services.marinetraffic.com/api/exportvessel/00945bab8516d2db6d52a752c9c89232f6e0e7d0/timespan:2/msgtype:extended/protocol:json/mmsi:"+ e.target.options.mmsi,
-										mode: "native"
-									},
-									function(data) {
-										if (data.length > 0) {
-											var content = '';
-											content += '<strong><a href="http://www.marinetraffic.com/fr/ais/details/ships/' + data[0][0] + '/">' + data[0][6] + ' - ' + data[0][10] + '</a></strong>';
-											content += '<br /><strong>Longueur / Largeur</strong> : ' + data[0][16] + ' / ' + data[0][17];
-											content += '<br /><strong>Tirant d\'eau</strong> : ' + data[0][18];
-											content += '<br /><strong>Vitesse / Cap</strong> : ' + data[0][3]/10 + ' / ' + data[0][4];
-											content += '<br /><strong>Destination</strong> : ' + data[0][14];
-											popup.setContent(content);
-											map.openPopup(popup);
-										}
-									});
-							});
-							markerGroup.addLayer(marker);
+						$.each(data[0].DATA, function(i,item){
+							// exlcude lighthouses, etc.
+							if (['13', '11'].indexOf(item.TYPE) < 0) {
+								var lat = item.LAT;
+								var lng = item.LNG;
+								var marker = new L.Marker(new L.LatLng(lat,lng), {
+									icon: boatIcon,
+									title: (item.NAME ? item.NAME : item.MMSI)
+								});
+								marker.options.course = item.COG;
+								marker.setIconAngle(marker.options.course);
+								marker.options.mmsi = item.MMSI;
+								//marker.options.status = item[5];
+								marker.on('click', function(e) {
+									var popup = new L.Popup();
+									popup.setLatLng(e.target._latlng);
+									$.get("proxy.php",
+										{
+											url: "http://www.myshiptracking.com/requests/vesseldetails.php?type=json&mmsi="+ e.target.options.mmsi,
+											mode: "native"
+										},
+										function(data) {
+											var details = data.V;
+											if (details.MMSI) {
+												var content = '';
+												content += '<strong><a href="http://www.myshiptracking.com/vessels/' + details.MMSI + '">' + (details.NAME ? details.NAME : details.MMSI) + ' - ' + details.FLAG + '</a></strong>';
+												//content += '<br /><strong>Longueur / Largeur</strong> : ' + data[0][16] + ' / ' + data[0][17];
+												content += '<br /><strong>Tirant d\'eau</strong> : ' + details.DRAUGHT;
+												content += '<br /><strong>Vitesse / Cap</strong> : ' + details.SOG + ' / ' + details.COG;
+												content += '<br /><strong>Destination</strong> : ' + details.DESTINATION;
+												popup.setContent(content);
+												map.openPopup(popup);
+											}
+										});
+								});
+								markerGroup.addLayer(marker);
+							}
 						});
 						map.addLayer(markerGroup);
 					}
@@ -170,7 +177,7 @@
 		};
 		
 		loadAis();
-		setInterval(loadAis, 125000); //125 seconds
+		setInterval(loadAis, 60000); //60 seconds
 
 	});
 })(jQuery);
