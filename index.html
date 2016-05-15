@@ -122,7 +122,8 @@
 			$.getJSON("proxy.php",
 				{
 					url: "http://www.myshiptracking.com/requests/vesselsonmap.php?type=json&minlat=47.73934847257785&maxlat=48.8502827704173&minlon=-7.2201430572509935&maxlon=-1.4193618072509935&zoom=8",
-					mode: "native"
+					mode: "native",
+					t: new Date().getTime()
 				},
 				function(data) {
 					if (data[0].DATA) {
